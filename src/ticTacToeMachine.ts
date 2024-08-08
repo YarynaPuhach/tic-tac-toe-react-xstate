@@ -39,7 +39,11 @@ export const ticTacToeMachine = createMachine(
               guard: 'isValidMove',
               actions: 'updateBoard'
             }
-          ]
+          ],
+          RESET: {
+            target: 'playing',
+            actions: 'resetGame'
+          }
         }
       },
       gameOver: {
@@ -74,7 +78,7 @@ export const ticTacToeMachine = createMachine(
         moves: ({ context }) => context.moves + 1,
         player: ({ context }) => (context.player === 'x' ? 'o' : 'x')
       }),
-      resetGame: assign(() => ({ ...context, board: Array(9).fill(null) as Array<Player | null> })),
+      resetGame: assign(context),
       setWinner: assign({
         winner: ({ context }) => (context.player === 'x' ? 'o' : 'x')
       })
@@ -94,18 +98,33 @@ export const ticTacToeMachine = createMachine(
         ];
 
         for (let line of winningLines) {
-          const xWon = line.every((index) => board[index] === 'x');
-          if (xWon) return true;
+          const xWon = line.every((index) => {
+            return board[index] === 'x';
+          });
 
-          const oWon = line.every((index) => board[index] === 'o');
-          if (oWon) return true;
+          if (xWon) {
+            return true;
+          }
+
+          const oWon = line.every((index) => {
+            return board[index] === 'o';
+          });
+
+          if (oWon) {
+            return true;
+          }
         }
 
         return false;
       },
-      checkDraw: ({ context }) => context.moves === 9,
+      checkDraw: ({ context }) => {
+        return context.moves === 9;
+      },
       isValidMove: ({ context, event }) => {
-        assertEvent(event, 'PLAY');
+        if (event.type !== 'PLAY') {
+          return false;
+        }
+
         return context.board[event.value] === null;
       }
     }
