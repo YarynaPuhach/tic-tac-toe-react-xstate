@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Tile from './Tile';
 
 const StyledBoard = styled.div`
+  margin: 0 auto;
   display: grid;
   height: 50vmin;
   width: 50vmin;
