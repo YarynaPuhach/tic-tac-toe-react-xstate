@@ -54,36 +54,36 @@ The game logic is managed using XState’s finite state machines (FSM). Here’s
 
 Finite State Machine Design:
 
-States:
-playing: The game is ongoing. Transitions to gameOver when a win or draw condition is met.
-gameOver: Contains sub-states winner and draw to handle game end scenarios.
+### States:
+- playing: The game is ongoing. Transitions to gameOver when a win or draw condition is met.
+- gameOver: Contains sub-states winner and draw to handle game end scenarios.
 Transitions:
 From playing to gameOver: Occurs when a win or draw condition is met.
 From gameOver to playing: Resetting the game transitions back to the playing state.
-Context:
+### Context:
 
-board: An array representing the 3x3 grid of the game. It stores the current state of each cell (either 'x', 'o', or null).
-moves: Counter for the number of moves made in the game.
-player: Indicates the current player ('x' or 'o').
-winner: Stores the winner of the game, if any.
-Guards:
+- board: An array representing the 3x3 grid of the game. It stores the current state of each cell (either 'x', 'o', or null).
+- moves: Counter for the number of moves made in the game.
+- player: Indicates the current player ('x' or 'o').
+- winner: Stores the winner of the game, if any.
+### Guards:
 
-checkWin: Checks if there is a winning condition by evaluating predefined winning lines.
-checkDraw: Determines if the game is a draw (i.e., all cells are filled and no winner).
-isValidMove: Validates if a move can be made at a given cell (i.e., the cell is empty).
-Actions:
+- checkWin: Checks if there is a winning condition by evaluating predefined winning lines.
+- checkDraw: Determines if the game is a draw (i.e., all cells are filled and no winner).
+- isValidMove: Validates if a move can be made at a given cell (i.e., the cell is empty).
+### Actions:
 
-updateBoard: Updates the board state with the current player's move, toggles the player, and increments the move counter.
-resetGame: Resets the game context to its initial state.
-setWinner: Sets the winner based on the current player when the game is over.
-Event Handling:
+- updateBoard: Updates the board state with the current player's move, toggles the player, and increments the move counter.
+- resetGame: Resets the game context to its initial state.
+- setWinner: Sets the winner based on the current player when the game is over.
+### Event Handling:
 
-PLAY: Represents a player making a move. It updates the board if the move is valid and transitions to the appropriate state based on game outcome.
-RESET: Resets the game to the initial state, either from playing or gameOver.
-Error Handling:
+- PLAY: Represents a player making a move. It updates the board if the move is valid and transitions to the appropriate state based on game outcome.
+- RESET: Resets the game to the initial state, either from playing or gameOver.
+### Error Handling:
 
-assertEvent: Ensures that events conform to expected types, helping to prevent unexpected event handling.
-Design Decisions
+- assertEvent: Ensures that events conform to expected types, helping to prevent unexpected event handling.
+### Design Decisions
 Finite State Machine (FSM) for Game Logic:
 
 Using FSMs simplifies the management of game states and transitions. XState's declarative approach allows for clear and manageable state transitions and actions.
