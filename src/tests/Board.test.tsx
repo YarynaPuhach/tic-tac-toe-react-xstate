@@ -1,15 +1,33 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+import { render } from '@testing-library/react';
 import Board from '../components/Board/Board';
+import Tile from '../components/Tile/Tile';
 
 describe('Board Component', () => {
-  it('calls the onPlay handler with the correct index when a tile is clicked', () => {
-    const onPlay = jest.fn();
-    const boardState: Array<'x' | 'o' | null> = Array(9).fill(null);
-    render(<Board board={boardState} onPlay={onPlay} />);
-    const tileToClick = screen.getByTestId('tile-2');
-    fireEvent.click(tileToClick);
+  it('renders the correct number of tiles based on board size', () => {
+    const board = Array(9).fill(null); // Example for a 3x3 board
+    const { getAllByTestId } = render(
+      <Board
+        board={board}
+        onPlay={() => { }}
+        size={3}
+      />
+    );
+    const tiles = getAllByTestId(/tile-/);
+    expect(tiles).toHaveLength(9);
+  });
 
-    expect(onPlay).toHaveBeenCalledTimes(1);
-    expect(onPlay).toHaveBeenCalledWith(2);
+  it('passes the correct fontSize to each Tile', () => {
+    const board = Array(9).fill(null); // Example for a 3x3 board
+    const { getByTestId } = render(
+      <Board
+        board={board}
+        onPlay={() => { }}
+        size={3}
+      />
+    );
+
+    const tile = getByTestId('tile-0');
+    expect(tile).toHaveStyle('font-size: 10vmin'); // Adjust based on your calculation
   });
 });

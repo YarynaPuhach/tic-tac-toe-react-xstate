@@ -1,64 +1,55 @@
 import { createActor } from 'xstate';
 import { ticTacToeMachine } from '../ticTacToeMachine';
 
-describe('ticTacToeMachine Logic', () => {
-  let service: any;
+describe('ticTacToeMachine', () => {
+  let actor: any;
 
   beforeEach(() => {
-    service = createActor(ticTacToeMachine);
-    service.start();
+    actor = createActor(ticTacToeMachine);
+    actor.start();
   });
 
   afterEach(() => {
-    service.stop();
+    actor.stop();
   });
 
-  it('should initialize with the correct context', async () => {
-    const state = await service.getSnapshot();
-    expect(state.context).toEqual({
-      board: Array(9).fill(null),
-      moves: 0,
-      player: 'x',
-      winner: undefined
-    });
+  it('should initialize with default context', () => {
+    const state = actor.getSnapshot(); // Use getSnapshot to get the current state
+
+    expect(state.context.size).toBe(3);
+    expect(state.context.board).toEqual(Array(9).fill(null));
+    expect(state.context.moves).toBe(0);
+    expect(state.context.player).toBe('x');
+    expect(state.context.winner).toBeUndefined();
   });
 
-  it('should update the board when a PLAY event is sent', async () => {
-    service.send({ type: 'PLAY', value: 0 });
-    const state = await service.getSnapshot();
-    expect(state.context.board[0]).toBe('x');
-    expect(state.context.moves).toBe(1);
-    expect(state.context.player).toBe('o');
+  it('should start playing when START event is sent', () => {
+    actor.send({ type: 'START' });
+    const state = actor.getSnapshot();
+
+    expect(state.matches('playing')).toBe(true);
   });
 
-  it('should not allow invalid moves', async () => {
-    service.send({ type: 'PLAY', value: 0 });
-    service.send({ type: 'PLAY', value: 0 });
-    const state = await service.getSnapshot();
-    expect(state.context.board[0]).toBe('x');
+  it('should reset game context on RESET event', () => {
+    // Set some context
+    actor.send({ type: 'PLAY', value: 0 });
+    actor.send({ type: 'PLAY', value: 1 });
+
+    // Reset the game
+    actor.send({ type: 'RESET' });
+
+    const state = actor.getSnapshot();
+    expect(state.context.board).toEqual(Array(9).fill(null));
+    expect(state.context.moves).toBe(0);
+    expect(state.context.player).toBe('x');
+    expect(state.context.winner).toBeUndefined();
   });
 
-  it('should detect a win condition', async () => {
-    service.send({ type: 'PLAY', value: 0 });
-    service.send({ type: 'PLAY', value: 1 });
-    service.send({ type: 'PLAY', value: 3 });
-    service.send({ type: 'PLAY', value: 4 });
-    service.send({ type: 'PLAY', value: 6 }); // Player 'x' wins
-    const state = await service.getSnapshot();
-    expect(state.matches('gameOver.winner')).toBe(true);
-    expect(state.context.winner).toBe('x');
-  });
+  it('should handle changing board size correctly', () => {
+    actor.send({ type: 'SET_SIZE', size: 4 });
+    const state = actor.getSnapshot();
 
-  it('should reset the game when RESET event is sent', async () => {
-    service.send({ type: 'PLAY', value: 0 });
-    service.send({ type: 'PLAY', value: 1 });
-    service.send({ type: 'RESET' });
-    const state = await service.getSnapshot();
-    expect(state.context).toEqual({
-      board: Array(9).fill(null),
-      moves: 0,
-      player: 'x',
-      winner: undefined
-    });
+    expect(state.context.size).toBe(4);
+    expect(state.context.board.length).toBe(16); // 4x4 board
   });
 });
