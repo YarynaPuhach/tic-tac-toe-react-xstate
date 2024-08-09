@@ -5,11 +5,11 @@ import Tile from '../Tile/Tile';
 interface BoardProps {
   board: Array<'x' | 'o' | null>;
   onPlay: (index: number) => void;
-  size: number;  // Додати розмір як пропс
+  size: number;
 }
 
 const calculateFontSize = (boardSize: number) => {
-  const baseFontSize = 10; // Adjust as needed
+  const baseFontSize = 10;
 
   const fontSize = Math.max(baseFontSize * Math.min(10 / boardSize, 1), 4); // Min font size to ensure readability
   

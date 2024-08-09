@@ -26,7 +26,7 @@ const glowingButton85 = keyframes`
 
 export const GameContainer = styled.div`
   text-align: center;
-  position: relative; /* To ensure relative positioning of elements */
+  position: relative;
 `;
 
 export const StatusContainer = styled.div<{ isGameOver: boolean }>`
@@ -56,7 +56,7 @@ export const StatusContainer = styled.div<{ isGameOver: boolean }>`
       top: -2px;
       left: -2px;
       background-size: 400%;
-      z-index: -2; /* Ensure it's behind other elements */
+      z-index: -2; 
       filter: blur(5px);
       -webkit-filter: blur(5px);
       width: calc(100% + 4px);
@@ -67,7 +67,7 @@ export const StatusContainer = styled.div<{ isGameOver: boolean }>`
     }
 
     &:after {
-      z-index: -1; /* Ensure it's behind the text but above the before pseudo-element */
+      z-index: -1; 
       content: "";
       position: absolute;
       width: 100%;
@@ -114,7 +114,7 @@ export const ResetButton = styled.button`
     top: -2px;
     left: -2px;
     background-size: 400%;
-    z-index: -2; /* Changed to -2 to ensure it's behind other elements */
+    z-index: -2; 
     filter: blur(5px);
     -webkit-filter: blur(5px);
     width: calc(100% + 4px);
@@ -125,7 +125,7 @@ export const ResetButton = styled.button`
   }
 
   &:after {
-    z-index: -1; /* Ensure it's behind the button but above the before pseudo-element */
+    z-index: -1;
     content: "";
     position: absolute;
     width: 100%;
