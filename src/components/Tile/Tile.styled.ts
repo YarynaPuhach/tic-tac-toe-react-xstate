@@ -14,11 +14,11 @@ const tileIn = keyframes`
   }
 `;
 
-export const StyledTile = styled.div<{ player: 'x' | 'o' | null }>`
+export const StyledTile = styled.div<{ player: 'x' | 'o' | null; fontSize: string }>`
   position: relative;
   display: grid;
   place-items: center;
-  font-size: 10vmin;
+  font-size: ${({ fontSize }) => fontSize};
   background: white;
   cursor: pointer;
   color: transparent;

@@ -2,8 +2,11 @@ import { createMachine, assign } from 'xstate';
 
 type Player = 'x' | 'o';
 
+const createBoard = (size: number) => Array(size * size).fill(null) as Array<Player | null>;
+
 const context = {
-  board: Array(9).fill(null) as Array<Player | null>,
+  size: 3, // початковий розмір дошки
+  board: createBoard(3),
   moves: 0,
   player: 'x' as Player,
   winner: undefined as Player | undefined,
@@ -18,8 +21,13 @@ export const ticTacToeMachine = createMachine(
       idle: {
         on: {
           START: 'playing',
+          SET_SIZE: {
+            target: 'idle',
+            actions: 'setSize',
+          },
         },
-        entry: 'resetGame', // Automatically reset when entering idle state
+        
+        entry: 'resetGame',
       },
       playing: {
         always: [
@@ -34,18 +42,19 @@ export const ticTacToeMachine = createMachine(
               actions: 'updateBoard',
             },
           ],
-          RESET: 'idle', // Reset directly transitions to idle
+          RESET: 'idle',
         },
+        entry: () => console.log('Entering playing state'), // Додайте це для перевірки
       },
       won: {
         entry: 'setWinner',
         on: {
-          RESET: 'idle', // Reset and transition to idle
+          RESET: 'idle',
         },
       },
       draw: {
         on: {
-          RESET: 'idle', // Reset and transition to idle
+          RESET: 'idle',
         },
       },
     },
@@ -54,9 +63,12 @@ export const ticTacToeMachine = createMachine(
     actions: {
       updateBoard: assign({
         board: ({ context, event }) => {
+          console.log('Current board state:', context.board);
+          console.log('Event value:', event.value);
           if (event.type === 'PLAY') {
             const updatedBoard = [...context.board];
             updatedBoard[event.value] = context.player;
+            console.log('Updated board state:', updatedBoard);
             return updatedBoard;
           }
           return context.board;
@@ -68,7 +80,18 @@ export const ticTacToeMachine = createMachine(
         winner: ({ context }) => (context.player === 'x' ? 'o' : 'x'),
       }),
       resetGame: assign({
-        board: () => Array(9).fill(null),
+        board: ({ context }) => {
+          const newBoard = createBoard(context.size);
+          console.log('Board reset to:', newBoard); // Додайте це для перевірки
+          return newBoard;
+        },
+        moves: () => 0,
+        player: () => 'x' as Player,
+        winner: () => undefined,
+      }),
+      setSize: assign({
+        size: ({ event }) => event.size,
+        board: ({ event }) => createBoard(event.size),
         moves: () => 0,
         player: () => 'x' as Player,
         winner: () => undefined,
@@ -76,17 +99,28 @@ export const ticTacToeMachine = createMachine(
     },
     guards: {
       checkWin: ({ context }) => {
-        const { board } = context;
-        const winningLines = [
-          [0, 1, 2],
-          [3, 4, 5],
-          [6, 7, 8],
-          [0, 3, 6],
-          [1, 4, 7],
-          [2, 5, 8],
-          [0, 4, 8],
-          [2, 4, 6],
-        ];
+        const { board, size } = context;
+        const winningLines = [];
+
+        // Генерація горизонтальних і вертикальних ліній
+        for (let i = 0; i < size; i++) {
+          const horizontal = [];
+          const vertical = [];
+          for (let j = 0; j < size; j++) {
+            horizontal.push(i * size + j);
+            vertical.push(j * size + i);
+          }
+          winningLines.push(horizontal, vertical);
+        }
+
+        // Генерація діагоналей
+        const diagonal1 = [];
+        const diagonal2 = [];
+        for (let i = 0; i < size; i++) {
+          diagonal1.push(i * size + i);
+          diagonal2.push(i * size + (size - 1 - i));
+        }
+        winningLines.push(diagonal1, diagonal2);
 
         for (let line of winningLines) {
           const xWon = line.every((index) => board[index] === 'x');
@@ -97,10 +131,12 @@ export const ticTacToeMachine = createMachine(
 
         return false;
       },
-      checkDraw: ({ context }) => context.moves === 9 && !context.winner,
+      checkDraw: ({ context }) => context.moves === context.size * context.size && !context.winner,
       isValidMove: ({ context, event }) => {
         if (event.type !== 'PLAY') return false;
-        return context.board[event.value] === null;
+        const isValid = context.board[event.value] === null;
+        console.log('Move valid:', isValid); // Додайте це для перевірки
+        return isValid;
       },
     },
   }

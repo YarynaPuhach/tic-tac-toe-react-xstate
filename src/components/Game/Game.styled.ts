@@ -136,3 +136,38 @@ export const ResetButton = styled.button`
     border-radius: 10px;
   }
 `;
+export const ChangeSizeContainer = styled.div`
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: rgba(249,249,249,0.44);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #333;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2em;
+    color: #555;
+  }
+
+  input[type="number"] {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  input[type="number"]:focus {
+    border-color: #7c24ff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(124, 36, 255, 0.2);
+  }
+`;
