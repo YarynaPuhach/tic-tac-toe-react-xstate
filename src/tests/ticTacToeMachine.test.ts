@@ -14,8 +14,7 @@ describe('ticTacToeMachine', () => {
   });
 
   it('should initialize with default context', () => {
-    const state = actor.getSnapshot(); // Use getSnapshot to get the current state
-
+    const state = actor.getSnapshot(); 
     expect(state.context.size).toBe(3);
     expect(state.context.board).toEqual(Array(9).fill(null));
     expect(state.context.moves).toBe(0);
@@ -31,11 +30,8 @@ describe('ticTacToeMachine', () => {
   });
 
   it('should reset game context on RESET event', () => {
-    // Set some context
     actor.send({ type: 'PLAY', value: 0 });
     actor.send({ type: 'PLAY', value: 1 });
-
-    // Reset the game
     actor.send({ type: 'RESET' });
 
     const state = actor.getSnapshot();
