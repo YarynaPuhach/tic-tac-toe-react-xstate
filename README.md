@@ -1,46 +1,102 @@
-# Getting Started with Create React App
+# Tic-Tac-Toe with React and XState
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a simple Tic-Tac-Toe game implemented using React and XState for state management. It demonstrates the use of finite state machines to manage game logic and UI interactions.
 
-## Available Scripts
+## Getting Started
 
-In the project directory, you can run:
+To run the project locally, follow these steps:
 
-### `npm start`
+### Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Make sure you have the following installed:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-### `npm test`
+### Clone the Repository
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+First, clone the repository:
 
-### `npm run build`
+```bash
+git clone https://github.com/YarynaPuhach/tic-tac-toe-react-xstate.git
+cd tic-tac-toe-react-xstate
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Install Dependencies
+Install the necessary dependencies using npm or yarn:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm install
+# or
+yarn install
+```
+### Running the Application
+To start the development server and view the application in your browser:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm start
+# or
+yarn start
+```
+The application will be available at http://localhost:3000.
 
-### `npm run eject`
+### Running Tests
+To run the tests for the project:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+npm test
+# or
+yarn test
+```
+### Approach and Design Decisions
+Finite State Machines (FSM) with XState
+The game logic is managed using XState’s finite state machines (FSM). Here’s a breakdown of the design:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Finite State Machine Design:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+States:
+playing: The game is ongoing. Transitions to gameOver when a win or draw condition is met.
+gameOver: Contains sub-states winner and draw to handle game end scenarios.
+Transitions:
+From playing to gameOver: Occurs when a win or draw condition is met.
+From gameOver to playing: Resetting the game transitions back to the playing state.
+Context:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+board: An array representing the 3x3 grid of the game. It stores the current state of each cell (either 'x', 'o', or null).
+moves: Counter for the number of moves made in the game.
+player: Indicates the current player ('x' or 'o').
+winner: Stores the winner of the game, if any.
+Guards:
 
-## Learn More
+checkWin: Checks if there is a winning condition by evaluating predefined winning lines.
+checkDraw: Determines if the game is a draw (i.e., all cells are filled and no winner).
+isValidMove: Validates if a move can be made at a given cell (i.e., the cell is empty).
+Actions:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+updateBoard: Updates the board state with the current player's move, toggles the player, and increments the move counter.
+resetGame: Resets the game context to its initial state.
+setWinner: Sets the winner based on the current player when the game is over.
+Event Handling:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+PLAY: Represents a player making a move. It updates the board if the move is valid and transitions to the appropriate state based on game outcome.
+RESET: Resets the game to the initial state, either from playing or gameOver.
+Error Handling:
+
+assertEvent: Ensures that events conform to expected types, helping to prevent unexpected event handling.
+Design Decisions
+Finite State Machine (FSM) for Game Logic:
+
+Using FSMs simplifies the management of game states and transitions. XState's declarative approach allows for clear and manageable state transitions and actions.
+Modular and Scalable Design:
+
+The separation of game states and actions ensures that the code is modular and easy to maintain. The approach scales well as additional features or states can be added with minimal changes.
+Context Management:
+
+Storing game-related data in the context provides a centralized way to manage and access game state, ensuring consistency and simplifying state updates.
+Validation and Error Handling:
+
+Guards and actions ensure that only valid moves are made and handle game outcomes correctly. This approach reduces the risk of invalid game states and improves robustness.
+Responsiveness and Usability:
+
+The game interface is designed to be intuitive and responsive, ensuring a smooth user experience across different devices and screen sizes.
+By leveraging XState's FSM capabilities and designing the game logic around clear states and transitions, the Tic-Tac-Toe game is both robust and maintainable. This design approach provides a solid foundation for extending the game or integrating additional features in the future.
