@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const shadowIn = keyframes`
   from {
@@ -16,7 +16,7 @@ const tileIn = keyframes`
 `;
 
 const StyledTile = styled.div<{ player: 'x' | 'o' | null }>`
-  position: relative; /* Make sure to set position to relative for pseudo-elements to work */
+  position: relative;
   display: grid;
   place-items: center;
   font-size: 10vmin;
@@ -48,7 +48,7 @@ const StyledTile = styled.div<{ player: 'x' | 'o' | null }>`
   }
 
   &::after {
-    color: #7c24ff;;
+    color: #7c24ff;
     text-shadow: 0 0 0.1em var(--background-shadow);
     animation-name: ${({ player }) => (player ? tileIn : 'none')};
     transform: translateZ(3px) scale(1);
@@ -71,6 +71,7 @@ const Tile: React.FC<TileProps> = ({ index, player, onClick }) => {
       player={player}
       data-player={player}
       onClick={onClick}
+      data-testid={`tile-${index}`} // Add data-testid here
     />
   );
 };
