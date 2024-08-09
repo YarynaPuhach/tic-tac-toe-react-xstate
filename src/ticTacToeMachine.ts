@@ -1,13 +1,4 @@
-import { EventObject, createMachine, assign } from 'xstate';
-
-function assertEvent<TEvent extends EventObject, Type extends TEvent['type']>(
-  ev: TEvent,
-  type: Type
-): asserts ev is Extract<TEvent, { type: Type }> {
-  if (ev.type !== type) {
-    throw new Error('Unexpected event type.');
-  }
-}
+import { createMachine, assign } from 'xstate';
 
 type Player = 'x' | 'o';
 
@@ -15,73 +6,73 @@ const context = {
   board: Array(9).fill(null) as Array<Player | null>,
   moves: 0,
   player: 'x' as Player,
-  winner: undefined as Player | undefined
+  winner: undefined as Player | undefined,
 };
 
 export const ticTacToeMachine = createMachine(
   {
-    initial: 'playing',
-    types: {} as {
-      context: typeof context;
-      events: { type: 'PLAY'; value: number } | { type: 'RESET' };
-    },
+    id: 'ticTacToe',
+    initial: 'idle',
     context,
     states: {
+      idle: {
+        on: {
+          START: 'playing',
+        },
+        entry: 'resetGame', // Automatically reset when entering idle state
+      },
       playing: {
         always: [
-          { target: 'gameOver.winner', guard: 'checkWin' },
-          { target: 'gameOver.draw', guard: 'checkDraw' }
+          { target: 'won', guard: 'checkWin' },
+          { target: 'draw', guard: 'checkDraw' },
         ],
         on: {
           PLAY: [
             {
               target: 'playing',
               guard: 'isValidMove',
-              actions: 'updateBoard'
-            }
+              actions: 'updateBoard',
+            },
           ],
-          RESET: {
-            target: 'playing',
-            actions: 'resetGame'
-          }
-        }
-      },
-      gameOver: {
-        initial: 'winner',
-        states: {
-          winner: {
-            tags: 'winner',
-            entry: 'setWinner'
-          },
-          draw: {
-            tags: 'draw'
-          }
+          RESET: 'idle', // Reset directly transitions to idle
         },
+      },
+      won: {
+        entry: 'setWinner',
         on: {
-          RESET: {
-            target: 'playing',
-            actions: 'resetGame'
-          }
-        }
-      }
-    }
+          RESET: 'idle', // Reset and transition to idle
+        },
+      },
+      draw: {
+        on: {
+          RESET: 'idle', // Reset and transition to idle
+        },
+      },
+    },
   },
   {
     actions: {
       updateBoard: assign({
         board: ({ context, event }) => {
-          assertEvent(event, 'PLAY');
-          const updatedBoard = [...context.board];
-          updatedBoard[event.value] = context.player;
-          return updatedBoard;
+          if (event.type === 'PLAY') {
+            const updatedBoard = [...context.board];
+            updatedBoard[event.value] = context.player;
+            return updatedBoard;
+          }
+          return context.board;
         },
         moves: ({ context }) => context.moves + 1,
-        player: ({ context }) => (context.player === 'x' ? 'o' : 'x')
+        player: ({ context }) => (context.player === 'x' ? 'o' : 'x'),
       }),
-      resetGame: assign(context),
       setWinner: assign({
-        winner: ({ context }) => (context.player === 'x' ? 'o' : 'x')
-      })
+        winner: ({ context }) => (context.player === 'x' ? 'o' : 'x'),
+      }),
+      resetGame: assign({
+        board: () => Array(9).fill(null),
+        moves: () => 0,
+        player: () => 'x' as Player,
+        winner: () => undefined,
+      }),
     },
     guards: {
       checkWin: ({ context }) => {
@@ -94,39 +85,23 @@ export const ticTacToeMachine = createMachine(
           [1, 4, 7],
           [2, 5, 8],
           [0, 4, 8],
-          [2, 4, 6]
+          [2, 4, 6],
         ];
 
         for (let line of winningLines) {
-          const xWon = line.every((index) => {
-            return board[index] === 'x';
-          });
+          const xWon = line.every((index) => board[index] === 'x');
+          const oWon = line.every((index) => board[index] === 'o');
 
-          if (xWon) {
-            return true;
-          }
-
-          const oWon = line.every((index) => {
-            return board[index] === 'o';
-          });
-
-          if (oWon) {
-            return true;
-          }
+          if (xWon || oWon) return true;
         }
 
         return false;
       },
-      checkDraw: ({ context }) => {
-        return context.moves === 9;
-      },
+      checkDraw: ({ context }) => context.moves === 9 && !context.winner,
       isValidMove: ({ context, event }) => {
-        if (event.type !== 'PLAY') {
-          return false;
-        }
-
+        if (event.type !== 'PLAY') return false;
         return context.board[event.value] === null;
-      }
-    }
+      },
+    },
   }
 );

@@ -12,7 +12,10 @@ const Tile: React.FC<TileProps> = ({ index, player, onClick }) => {
     <StyledTile
       player={player}
       data-player={player}
-      onClick={onClick}
+      onClick={() => {
+        console.log(`Tile ${index} clicked`);
+        onClick();
+      }}
       data-testid={`tile-${index}`} // Add data-testid here
     />
   );
