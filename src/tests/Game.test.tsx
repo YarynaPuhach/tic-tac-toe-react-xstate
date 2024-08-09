@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { createActor } from 'xstate';
 import { ticTacToeMachine } from '../ticTacToeMachine';
 import Game from '../components/Game';
