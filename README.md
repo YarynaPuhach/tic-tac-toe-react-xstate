@@ -1,5 +1,7 @@
 # Tic-Tac-Toe with React and XState
 
+[DEMO](https://tic-tac-toe-react-xstate.vercel.app/)
+
 This project is a simple Tic-Tac-Toe game implemented using React and XState for state management. It demonstrates the use of finite state machines to manage game logic and UI interactions.
 
 ## Getting Started
