@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const shadowIn = keyframes`
@@ -15,7 +14,7 @@ const tileIn = keyframes`
   }
 `;
 
-const StyledTile = styled.div<{ player: 'x' | 'o' | null }>`
+export const StyledTile = styled.div<{ player: 'x' | 'o' | null }>`
   position: relative;
   display: grid;
   place-items: center;
@@ -58,22 +57,3 @@ const StyledTile = styled.div<{ player: 'x' | 'o' | null }>`
     color: #ebffbc;
   }
 `;
-
-interface TileProps {
-  index: number;
-  player: 'x' | 'o' | null;
-  onClick: () => void;
-}
-
-const Tile: React.FC<TileProps> = ({ index, player, onClick }) => {
-  return (
-    <StyledTile
-      player={player}
-      data-player={player}
-      onClick={onClick}
-      data-testid={`tile-${index}`} // Add data-testid here
-    />
-  );
-};
-
-export default Tile;

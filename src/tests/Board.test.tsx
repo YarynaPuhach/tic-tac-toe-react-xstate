@@ -1,5 +1,5 @@
 import { render, fireEvent, screen } from '@testing-library/react';
-import Board from '../components/Board'; 
+import Board from '../components/Board/Board';
 
 describe('Board Component', () => {
   it('calls the onPlay handler with the correct index when a tile is clicked', () => {

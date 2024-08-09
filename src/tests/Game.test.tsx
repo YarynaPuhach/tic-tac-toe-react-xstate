@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { createActor } from 'xstate';
 import { ticTacToeMachine } from '../ticTacToeMachine';
-import Game from '../components/Game';
+import Game from '../components/Game/Game';
 
 describe('Game Component', () => {
   let actor: any;

@@ -1,13 +1,4 @@
-import React from 'react';
-import { useMachine } from '@xstate/react';
 import styled, { keyframes, css } from 'styled-components';
-import { ticTacToeMachine } from '../ticTacToeMachine';
-import Board from '../components/Board';
-
-const GameContainer = styled.div`
-  text-align: center;
-  position: relative; /* To ensure relative positioning of elements */
-`;
 
 const glowingBorder = keyframes`
   0% {
@@ -21,7 +12,24 @@ const glowingBorder = keyframes`
   }
 `;
 
-const StatusContainer = styled.div<{ isGameOver: boolean }>`
+const glowingButton85 = keyframes`
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+`;
+
+export const GameContainer = styled.div`
+  text-align: center;
+  position: relative; /* To ensure relative positioning of elements */
+`;
+
+export const StatusContainer = styled.div<{ isGameOver: boolean }>`
   margin-bottom: 20px;
   font-size: 1.5rem;
   font-weight: bold;
@@ -72,19 +80,7 @@ const StatusContainer = styled.div<{ isGameOver: boolean }>`
   `}
 `;
 
-const glowingButton85 = keyframes`
-  0% {
-    background-position: 0 0;
-  }
-  50% {
-    background-position: 400% 0;
-  }
-  100% {
-    background-position: 0 0;
-  }
-`;
-
-const ResetButton = styled.button`
+export const ResetButton = styled.button`
   padding: 0.6em 2em;
   border: none;
   outline: none;
@@ -140,34 +136,3 @@ const ResetButton = styled.button`
     border-radius: 10px;
   }
 `;
-
-const Game: React.FC = () => {
-  const [state, send] = useMachine(ticTacToeMachine);
-
-  const isGameOver = state.matches('gameOver');
-  const currentPlayer = state.context.player;
-  const winner = state.context.winner;
-
-  return (
-    <GameContainer>
-      <h1>Tic-Tac-Toe</h1>
-      <StatusContainer isGameOver={isGameOver}>
-        {isGameOver ? (
-          <>
-            {state.hasTag('winner') && <div>Winner: {winner}</div>}
-            {state.hasTag('draw') && <div>Draw</div>}
-          </>
-        ) : (
-          <div>
-            {currentPlayer === 'x' && <span>Player X's Turn</span>}
-            {currentPlayer === 'o' && <span>Player O's Turn</span>}
-          </div>
-        )}
-      </StatusContainer>
-      <Board board={state.context.board} onPlay={(index) => send({ type: 'PLAY', value: index })} />
-      <ResetButton onClick={() => send({ type: 'RESET' })}>Reset</ResetButton>
-    </GameContainer>
-  );
-};
-
-export default Game;

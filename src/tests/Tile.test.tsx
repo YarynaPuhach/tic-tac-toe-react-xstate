@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react';
 import { act } from 'react';
-import Tile from '../components/Tile';
+import Tile from '../components/Tile/Tile';
 
 describe('Tile Component', () => {
   it('renders the correct player symbol', () => {
