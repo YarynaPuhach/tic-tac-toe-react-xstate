@@ -18,7 +18,6 @@ describe('Game Component', () => {
   it('should initialize with an empty board and player x\'s turn', () => {
     render(<Game />);
 
-    // Check initial state
     const state = actor.getSnapshot();
     const board = state.context.board;
 
@@ -28,7 +27,7 @@ describe('Game Component', () => {
   });
 
   it('should reset the game when RESET event is sent', () => {
-    // Setup initial state and perform reset
+
     actor.send({ type: 'PLAY', value: 0 });
     actor.send({ type: 'PLAY', value: 1 });
     actor.send({ type: 'RESET' });

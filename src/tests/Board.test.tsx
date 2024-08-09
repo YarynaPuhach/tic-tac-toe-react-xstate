@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
-import Board from '../components/Board'; // Ensure this path is correct
+import Board from '../components/Board'; 
 
 describe('Board Component', () => {
   it('calls the onPlay handler with the correct index when a tile is clicked', () => {
     const onPlay = jest.fn();
-    const boardState: Array<'x' | 'o' | null> = Array(9).fill(null); // Initial board state
+    const boardState: Array<'x' | 'o' | null> = Array(9).fill(null);
 
     render(<Board board={boardState} onPlay={onPlay} />);
 
@@ -14,6 +14,6 @@ describe('Board Component', () => {
     fireEvent.click(tileToClick);
 
     expect(onPlay).toHaveBeenCalledTimes(1);
-    expect(onPlay).toHaveBeenCalledWith(2); // Ensure the correct index is passed
+    expect(onPlay).toHaveBeenCalledWith(2);
   });
 });

@@ -1,5 +1,5 @@
 import { createActor } from 'xstate';
-import { ticTacToeMachine } from '../ticTacToeMachine'; // Adjust the import path as needed
+import { ticTacToeMachine } from '../ticTacToeMachine';
 
 describe('ticTacToeMachine Logic', () => {
   let service: any;
@@ -33,9 +33,9 @@ describe('ticTacToeMachine Logic', () => {
 
   it('should not allow invalid moves', async () => {
     service.send({ type: 'PLAY', value: 0 });
-    service.send({ type: 'PLAY', value: 0 }); // Invalid move
+    service.send({ type: 'PLAY', value: 0 });
     const state = await service.getSnapshot();
-    expect(state.context.board[0]).toBe('x'); // Board should not change
+    expect(state.context.board[0]).toBe('x');
   });
 
   it('should detect a win condition', async () => {
